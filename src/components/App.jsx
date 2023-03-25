@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { fetchImages } from '../services/api';
+import { getImagesapp } from 'services/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Loader } from './Loader/Loader';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
-import { animateScroll } from 'react-scroll';
 import { Modal } from './Modal/Modal';
 
 export const App = () => {
@@ -29,11 +28,10 @@ export const App = () => {
     setIsLoading(true);
 
     try {
-      const { hits, totalHits } = await fetchImages(searchQuery, page);
+      const { hits, totalHits } = await getImagesapp(searchQuery, page);
       if (hits.length === 0) {
         return alert('Sorry, nothing found 🤷‍♂️');
       }
-      console.log(hits, totalHits);
       setImages(prevImages => [...prevImages, ...hits]);
       setLoadMore(page < Math.ceil(totalHits / per_page));
     } catch (error) {
@@ -53,19 +51,9 @@ export const App = () => {
   const onloadMore = () => {
     setIsLoading(true);
     setPage(prevPage => prevPage + 1);
-    scrollOnMoreButton();
-  };
-
-  const scrollOnMoreButton = () => {
-    animateScroll.scrollToBottom({
-      duration: 1000,
-      delay: 10,
-      smooth: 'linear',
-    });
   };
 
   const openModal = largeImageURL => {
-    console.log(largeImageURL);
     setShowModal(true);
     setLargeImageURL(largeImageURL);
   };
